@@ -1,0 +1,115 @@
+CREATE DATABASE formula1_data;
+USE formula1_data;
+
+CREATE TABLE Nacionalidades(
+nationalityid INT NOT NULL,
+nationality VARCHAR(20) NOT NULL,
+PRIMARY KEY(nationalityid)
+);
+
+CREATE TABLE Paises(
+countryid INT NOT NULL,
+country VARCHAR(25) NOT NULL,
+PRIMARY KEY(countryid)
+);
+
+CREATE TABLE Temporada(
+seasonid INT NOT NULL,
+year YEAR NOT NULL,
+PRIMARY KEY(seasonid)
+);
+
+CREATE TABLE Pilotos(
+driverid INT NOT NULL,
+nationalityid INT NOT NULL,
+number INT NOT NULL,
+forename VARCHAR(10) NOT NULL,
+surname VARCHAR(10) NOT NULL,
+PRIMARY KEY(driverid),
+FOREIGN KEY(nationalityid) 
+REFERENCES Nacionalidades(nationalityid)
+);
+
+CREATE TABLE Circuitos(
+circuitid INT NOT NULL,
+countryid INT NOT NULL,
+name VARCHAR(15) NOT NULL,
+location VARCHAR(15) NOT NULL,
+PRIMARY KEY(circuitid),
+FOREIGN KEY(countryid)
+REFERENCES Paises(countryid)
+);
+
+CREATE TABLE Carreras(
+raceid INT NOT NULL AUTO_INCREMENT,
+driverid INT NOT NULL,
+circuitid INT NOT NULL,
+seasonid INT NOT NULL,
+round INT,
+name VARCHAR(30) NOT NULL,
+date DATE NOT NULL,
+PRIMARY KEY(raceid),
+FOREIGN KEY(driverid)
+REFERENCES Pilotos(driverid),
+FOREIGN KEY(circuitid)
+REFERENCES Circuitos(circuitid),
+FOREIGN KEY(seasonid)
+REFERENCES Temporada(seasonid)
+);
+
+CREATE TABLE Resultados(
+resultid INT NOT NULL AUTO_INCREMENT,
+raceid INT NOT NULL,
+driverid INT NOT NULL,
+position INT NOT NULL,
+points INT NOT NULL,
+PRIMARY KEY(resultid),
+FOREIGN KEY(raceid)
+REFERENCES Carreras(raceid),
+FOREIGN KEY(driverid)
+REFERENCES Pilotos(driverid)
+);
+
+CREATE TABLE Campeonato_Pilotos(
+driverStandingsid INT NOT NULL AUTO_INCREMENT,
+raceid INT NOT NULL,
+driverid INT NOT NULL,
+points INT NOT NULL,
+position INT NOT NULL,
+wins INT NOT NULL,
+PRIMARY KEY(driverStandingsid),
+FOREIGN KEY(raceid)
+REFERENCES Carreras(raceid),
+FOREIGN KEY(driverid)
+REFERENCES Pilotos(driverid)
+);
+
+CREATE TABLE Carre_Piloto(
+raceid INT NOT NULL,
+driverid INT NOT NULL,
+seasonid INT NOT NULL,
+date DATE NOT NULL,
+time TIMESTAMP NOT NULL,
+PRIMARY KEY(raceid, driverid),
+FOREIGN KEY(raceid)
+REFERENCES Carreras(raceid),
+FOREIGN KEY(driverid)
+REFERENCES Pilotos(driverid),
+FOREIGN KEY (seasonid)
+REFERENCES Temporada(seasonid)
+);
+
+CREATE TABLE Resultado_Clasificacion(
+qualifyid INT NOT NULL AUTO_INCREMENT,
+raceid INT NOT NULL,
+driverid INT NOT NULL,
+position INT NOT NULL,
+q1 FLOAT NOT NULL,
+q2 FLOAT,
+q3 FLOAT,
+PRIMARY KEY(qualifyid),
+FOREIGN KEY(raceid)
+REFERENCES Carreras(raceid),
+FOREIGN KEY(driverid)
+REFERENCES Pilotos(driverid)
+);
